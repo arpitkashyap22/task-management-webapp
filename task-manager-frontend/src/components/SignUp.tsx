@@ -25,7 +25,7 @@ const SignUp: React.FC = () => {
 		<form onSubmit={handleSubmit} className="login-form">
             <div className="mb-4">
 				<label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Name</label>
-				<input type="email" id="email" className="shadow-sm rounded-md w-full px-3 py-2 border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500" placeholder="Jhon Doe"  onChange={(e) => setName(e.target.value)} required />
+				<input type="text" id="email" className="shadow-sm rounded-md w-full px-3 py-2 border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500" placeholder="Jhon Doe"  onChange={(e) => setName(e.target.value)} required />
 			</div>
 			<div className="mb-4">
 				<label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Email Address</label>
