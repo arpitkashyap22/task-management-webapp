@@ -16,20 +16,21 @@ const App: React.FC = () => {
         <Route path="/signup" element={<SignUp />} />
         
         {/* Redirect root route to /tasks if logged in */}
-        <Route 
-          path="/" 
-          element={token ? <Navigate to="/tasks" replace /> : <Navigate to="/login" replace />} 
-        />
+       
         
         <Route 
           path="/tasks" 
-          element={token ? <TaskList /> : <Navigate to="/login" replace />} 
+          element={<TaskList />}
         />
         <Route 
           path="/add-task" 
-          element={token ? <AddTask /> : <Navigate to="/login" replace />} 
+          element={<AddTask />} 
         />
-        <Route path="/tasks/:id"  element={token ? <TaskDisplay/> : <Navigate to="/login" replace />}
+        <Route path="/tasks/:id"  element={ <TaskDisplay/>}
+        />
+         <Route 
+          path="/" 
+          element={token ? <Navigate to="/tasks" replace /> : <Navigate to="/login" replace />} 
         />
       </Routes>
     </Router>
