@@ -8,6 +8,7 @@ const SignUp: React.FC = () => {
     const [name, setName] = useState<string>('');
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
+  const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -15,13 +16,22 @@ const SignUp: React.FC = () => {
       registerUser(name,email,password).then( ()=>{
         navigate('/tasks');
       })
-      .catch(error => console.error('Error logging in:', error));
+      .catch(err => {
+		// if (err.response && err.response.status === 409) {
+		// 	// Example for unique email constraint violation
+		// 	setError('Email already exists. Please use a different email.');
+		// } else {
+			setError('Email already EXists An unexpected error occurred. Please try again later.');
+		// }
+		console.error('Error registering:', err);
+	});
   };
 
   return (
     <div className="min-h-screen flex items-center justify-center w-full dark:bg-gray-950">
 	<div className="bg-white dark:bg-gray-900 shadow-md rounded-lg px-8 py-6 max-w-md">
 		<h1 className="text-2xl font-bold text-center mb-4 dark:text-gray-200">Create your Account</h1>
+		{error && <p className="text-red-500 text-sm mb-4">{error}</p>}
 		<form onSubmit={handleSubmit} className="login-form">
             <div className="mb-4">
 				<label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Name</label>
@@ -45,7 +55,7 @@ const SignUp: React.FC = () => {
 				<a onClick={() => navigate("/login")}
 					className="text-xs text-indigo-500 hover:text-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Already Have an Account? Login</a>
 			</div>
-			<button type="submit" className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Login</button>
+			<button type="submit" className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Sign UP</button>
 		</form>
 	</div>
 </div>
