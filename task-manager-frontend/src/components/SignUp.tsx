@@ -21,7 +21,7 @@ const SignUp: React.FC = () => {
 		// 	// Example for unique email constraint violation
 		// 	setError('Email already exists. Please use a different email.');
 		// } else {
-			setError('Email already EXists An unexpected error occurred. Please try again later.');
+			setError('Email already Exists.');
 		// }
 		console.error('Error registering:', err);
 	});
