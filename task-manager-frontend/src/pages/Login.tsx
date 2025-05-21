@@ -7,20 +7,35 @@ import { loginUser } from '../services/userApi';
 const Login: React.FC = () => {
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string>('');
   const navigate = useNavigate();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-      loginUser(email,password).then( ()=>{
-        navigate('/tasks');
-      })
-      .catch(error => console.error('Error logging in:', error));
+    setLoading(true);
+    setError('');
+    
+    try {
+      await loginUser(email, password);
+      navigate('/home');
+    } catch (error) {
+      setError('Invalid email or password. Please try again.');
+      console.error('Error logging in:', error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <div className="min-h-screen flex items-center justify-center w-full dark:bg-gray-950">
 	<div className="bg-white dark:bg-gray-900 shadow-md rounded-lg px-8 py-6 max-w-md">
 		<h1 className="text-2xl font-bold text-center mb-4 dark:text-gray-200">Welcome Back!</h1>
+		{error && (
+			<div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
+				{error}
+			</div>
+		)}
 		<form onSubmit={handleSubmit} className="login-form">
 			<div className="mb-4">
 				<label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Email Address</label>
@@ -39,10 +54,16 @@ const Login: React.FC = () => {
 					<label htmlFor="remember" className="ml-2 block text-sm text-gray-700 dark:text-gray-300">Remember me</label>
 				</div>
 				<a onClick={() => navigate("/signup")}
-					className="text-xs text-indigo-500 hover:text-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Create
+					className="text-xs text-indigo-500 hover:text-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 cursor-pointer">Create
 					Account</a>
 			</div>
-			<button type="submit" className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Login</button>
+			<button 
+				type="submit" 
+				disabled={loading}
+				className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
+			>
+				{loading ? 'Logging in...' : 'Login'}
+			</button>
 		</form>
 	</div>
 </div>

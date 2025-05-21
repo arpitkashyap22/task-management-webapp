@@ -8,34 +8,39 @@ const SignUp: React.FC = () => {
     const [name, setName] = useState<string>('');
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<string>('');
+  const [loading, setLoading] = useState<boolean>(false);
   const navigate = useNavigate();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-      registerUser(name,email,password).then( ()=>{
-        navigate('/tasks');
-      })
-      .catch(err => {
-		// if (err.response && err.response.status === 409) {
-		// 	// Example for unique email constraint violation
-		// 	setError('Email already exists. Please use a different email.');
-		// } else {
-			setError('Email already Exists.');
-		// }
-		console.error('Error registering:', err);
-	});
+    setLoading(true);
+    setError('');
+    
+    try {
+      await registerUser(name, email, password);
+      navigate('/home');
+    } catch (err) {
+      setError('Email already exists. Please use a different email.');
+      console.error('Error registering:', err);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <div className="min-h-screen flex items-center justify-center w-full dark:bg-gray-950">
 	<div className="bg-white dark:bg-gray-900 shadow-md rounded-lg px-8 py-6 max-w-md">
 		<h1 className="text-2xl font-bold text-center mb-4 dark:text-gray-200">Create your Account</h1>
-		{error && <p className="text-red-500 text-sm mb-4">{error}</p>}
+		{error && (
+			<div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
+				{error}
+			</div>
+		)}
 		<form onSubmit={handleSubmit} className="login-form">
             <div className="mb-4">
-				<label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Name</label>
-				<input type="text" id="email" className="shadow-sm rounded-md w-full px-3 py-2 border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500" placeholder="Jhon Doe"  onChange={(e) => setName(e.target.value)} required />
+				<label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Name</label>
+				<input type="text" id="name" className="shadow-sm rounded-md w-full px-3 py-2 border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500" placeholder="John Doe"  onChange={(e) => setName(e.target.value)} required />
 			</div>
 			<div className="mb-4">
 				<label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Email Address</label>
@@ -53,9 +58,15 @@ const SignUp: React.FC = () => {
 					
 				</div>
 				<a onClick={() => navigate("/login")}
-					className="text-xs text-indigo-500 hover:text-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Already Have an Account? Login</a>
+					className="text-xs text-indigo-500 hover:text-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 cursor-pointer">Already Have an Account? Login</a>
 			</div>
-			<button type="submit" className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Sign UP</button>
+			<button 
+				type="submit" 
+				disabled={loading}
+				className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
+			>
+				{loading ? 'Creating Account...' : 'Sign Up'}
+			</button>
 		</form>
 	</div>
 </div>

@@ -3,7 +3,6 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import AddTask from './pages/AddTask.tsx';
 import Login from './pages/Login.tsx';
 import SignUp from './pages/SignUp.tsx';
-import TaskDisplay from './components/TasksDisplay.tsx';
 import Home from './pages/Home.tsx';
 
 const App: React.FC = () => {
