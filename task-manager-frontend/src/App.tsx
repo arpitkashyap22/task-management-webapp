@@ -1,10 +1,10 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import TaskList from './components/TaskList.tsx';
-import AddTask from './components/AddTask.tsx';
-import Login from './components/Login.tsx';
-import SignUp from './components/SignUp.tsx';
+import AddTask from './pages/AddTask.tsx';
+import Login from './pages/Login.tsx';
+import SignUp from './pages/SignUp.tsx';
 import TaskDisplay from './components/TasksDisplay.tsx';
+import Home from './pages/Home.tsx';
 
 const App: React.FC = () => {
   const token = localStorage.getItem('token'); // Check for authentication token
@@ -19,18 +19,16 @@ const App: React.FC = () => {
        
         
         <Route 
-          path="/tasks" 
-          element={<TaskList />}
+          path="/home" 
+          element={<Home></Home>}
         />
         <Route 
           path="/add-task" 
           element={<AddTask />} 
         />
-        <Route path="/tasks/:id"  element={ <TaskDisplay/>}
-        />
          <Route 
           path="/" 
-          element={token ? <Navigate to="/tasks" replace /> : <Navigate to="/login" replace />} 
+          element={token ? <Navigate to="/home" replace /> : <Navigate to="/login" replace />} 
         />
       </Routes>
     </Router>

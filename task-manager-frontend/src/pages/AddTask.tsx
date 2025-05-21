@@ -1,12 +1,30 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { createTask } from "../services/taskApi"; // Assuming createTask is the API function to add tasks
+import React, { useState, useEffect } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { createTask, fetchTaskById, updateTask } from "../services/taskApi";
 
 const AddTask: React.FC = () => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [loading, setLoading] = useState(false);
+  const [searchParams] = useSearchParams();
+  const taskId = searchParams.get('id');
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const loadTask = async () => {
+      if (taskId) {
+        try {
+          const task = await fetchTaskById(taskId);
+          setTitle(task.title);
+          setDescription(task.description);
+        } catch (error) {
+          console.error("Error loading task:", error);
+          alert("Failed to load task details");
+        }
+      }
+    };
+    loadTask();
+  }, [taskId]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -19,11 +37,15 @@ const AddTask: React.FC = () => {
     setLoading(true);
 
     try {
-      await createTask(title, description );
-      navigate("/tasks"); // Redirect to task list after adding the task
+      if (taskId) {
+        await updateTask(taskId, { title, description });
+      } else {
+        await createTask(title, description);
+      }
+      navigate("/home");
     } catch (error) {
-      console.error("Error creating task:", error);
-      alert("There was an error adding the task");
+      console.error("Error saving task:", error);
+      alert("There was an error saving the task");
     } finally {
       setLoading(false);
     }
@@ -32,7 +54,9 @@ const AddTask: React.FC = () => {
   return (
     <div className="bg-indigo-50 min-h-screen md:px-20 pt-6">
       <div className="bg-white rounded-md px-6 py-10 max-w-2xl mx-auto">
-        <h1 className="text-center text-2xl font-bold text-gray-500 mb-10">ADD TASK</h1>
+        <h1 className="text-center text-2xl font-bold text-gray-500 mb-10">
+          {taskId ? "UPDATE TASK" : "ADD TASK"}
+        </h1>
         <form onSubmit={handleSubmit}>
           <div className="space-y-4">
             {/* Title */}
@@ -72,7 +96,7 @@ const AddTask: React.FC = () => {
               className="px-6 py-2 mx-auto block rounded-md text-lg font-semibold text-indigo-100 bg-indigo-600"
               disabled={loading}
             >
-              {loading ? "Adding Task..." : "ADD TASK"}
+              {loading ? "Saving..." : taskId ? "UPDATE TASK" : "ADD TASK"}
             </button>
           </div>
         </form>

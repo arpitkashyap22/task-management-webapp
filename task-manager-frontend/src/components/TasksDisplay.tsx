@@ -9,8 +9,7 @@ interface Task {
   completed: boolean;
 }
 
-const TaskDisplay: React.FC = () => {
-  const { id } = useParams<{ id: string | undefined }>(); // Specify that id can be undefined
+const TaskDisplay: React.FC<{ id?: string }> = ({ id }) => {
   const [task, setTask] = useState<Task | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -87,10 +86,10 @@ const TaskDisplay: React.FC = () => {
 
         {/* Back to Task List Button */}
         <button
-          onClick={() => navigate('/tasks')}
+          onClick={() => navigate(`/add-task?id=${id}`)}
           className="mt-4 ml-4 px-4 py-2 rounded-md bg-gray-500 hover:bg-gray-600 text-white"
         >
-          Back to Task List
+          Update Task
         </button>
       </div>
     </div>
