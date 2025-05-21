@@ -9,7 +9,7 @@ interface Task {
   completed: boolean;
 }
 
-const TaskDisplay: React.FC<{ id?: string }> = ({ id }) => {
+const TaskDisplay: React.FC<{ id: string }> = ({ id }) => {
   const [task, setTask] = useState<Task | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -17,17 +17,12 @@ const TaskDisplay: React.FC<{ id?: string }> = ({ id }) => {
 
   useEffect(() => {
     const fetchTask = async () => {
-      if (id) { // Ensure id is defined before fetching
-        try {
-          const taskData = await fetchTaskById(id);
-          setTask(taskData);
-        } catch (err) {
-          setError('Failed to fetch task details.');
-        } finally {
-          setLoading(false);
-        }
-      } else {
-        setError('Invalid task ID.');
+      try {
+        const taskData = await fetchTaskById(id);
+        setTask(taskData);
+      } catch (err) {
+        setError('Failed to fetch task details.');
+      } finally {
         setLoading(false);
       }
     };
@@ -39,7 +34,7 @@ const TaskDisplay: React.FC<{ id?: string }> = ({ id }) => {
   const toggleTaskStatus = async () => {
     if (task) {
       try {
-        const updatedTask = await updateTask(id!, { completed: !task.completed }); // Use non-null assertion
+        const updatedTask = await updateTask(id, { completed: !task.completed });
         setTask((prev) => (prev ? { ...prev, completed: updatedTask.completed } : prev));
       } catch (err) {
         setError('Failed to update task status.');
@@ -48,49 +43,48 @@ const TaskDisplay: React.FC<{ id?: string }> = ({ id }) => {
   };
 
   if (loading) {
-    return <div className="text-center py-20 text-gray-500">Loading task details...</div>;
+    return <div className="bg-white p-4 rounded-lg shadow-md animate-pulse">Loading...</div>;
   }
 
   if (error) {
-    return <div className="text-center py-20 text-red-500">{error}</div>;
+    return <div className="bg-white p-4 rounded-lg shadow-md text-red-500">{error}</div>;
   }
 
   if (!task) {
-    return <div className="text-center py-20 text-gray-500">Task not found</div>;
+    return <div className="bg-white p-4 rounded-lg shadow-md text-gray-500">Task not found</div>;
   }
 
   return (
-    <div className="min-h-screen bg-gray-100 p-6">
-      <div className="max-w-2xl mx-auto bg-white p-6 rounded-md shadow-md">
-        <h1 className="text-2xl font-bold text-gray-800">{task.title}</h1>
-        <p className="text-gray-600 mt-2">{task.description}</p>
-        <div className="mt-4">
-          <span
-            className={`inline-block px-3 py-1 text-sm font-medium rounded-full ${
-              task.completed ? 'bg-green-200 text-green-800' : 'bg-yellow-200 text-yellow-800'
-            }`}
-          >
-            {task.completed ? 'Completed' : 'Incomplete'}
-          </span>
-        </div>
-
-        {/* Toggle Status Button */}
-        <button
-          onClick={toggleTaskStatus}
-          className={`mt-4 px-4 py-2 rounded-md text-white ${
-            task.completed ? 'bg-red-500 hover:bg-red-600' : 'bg-green-500 hover:bg-green-600'
+    <div className="bg-white p-4 rounded-lg shadow-md">
+      <h2 className="text-xl font-semibold text-gray-800 mb-2">{task.title}</h2>
+      <p className="text-gray-600 mb-4">{task.description}</p>
+      
+      <div className="flex items-center justify-between">
+        <span
+          className={`inline-block px-3 py-1 text-sm font-medium rounded-full ${
+            task.completed ? 'bg-green-200 text-green-800' : 'bg-yellow-200 text-yellow-800'
           }`}
         >
-          {task.completed ? 'Mark as Incomplete' : 'Mark as Completed'}
-        </button>
+          {task.completed ? 'Completed' : 'Incomplete'}
+        </span>
 
-        {/* Back to Task List Button */}
-        <button
-          onClick={() => navigate(`/add-task?id=${id}`)}
-          className="mt-4 ml-4 px-4 py-2 rounded-md bg-gray-500 hover:bg-gray-600 text-white"
-        >
-          Update Task
-        </button>
+        <div className="space-x-2">
+          <button
+            onClick={toggleTaskStatus}
+            className={`px-3 py-1 rounded-md text-white text-sm ${
+              task.completed ? 'bg-red-500 hover:bg-red-600' : 'bg-green-500 hover:bg-green-600'
+            }`}
+          >
+            {task.completed ? 'Mark Incomplete' : 'Mark Complete'}
+          </button>
+
+          <button
+            onClick={() => navigate(`/add-task?id=${id}`)}
+            className="px-3 py-1 rounded-md bg-gray-500 hover:bg-gray-600 text-white text-sm"
+          >
+            Edit
+          </button>
+        </div>
       </div>
     </div>
   );

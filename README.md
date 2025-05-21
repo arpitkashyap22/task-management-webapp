@@ -1,249 +1,179 @@
-# Task Management Application
+# Task Management Web Application
 
-A simple task management web application that allows users to create, read, update, and delete tasks. This application provides user authentication and a responsive interface built with React and Node.js.
+A full-stack task management application with AI-powered task summarization and Slack integration. Built with React, Node.js, and modern web technologies.
 
-## Table of Contents
-- [Features](#features)
-- [Tech Stack](#tech-stack)
-- [Project Setup](#project-setup)
-- [API Endpoints](#api-endpoints)
-- [API Documentation](#api-documentation)
-- [Contributing](#contributing)
-- [License](#license)
+## 🌟 Features
 
-## Features
-- User authentication (Login and Sign Up)
-- Create, read, update, and delete tasks
-- Toggle task completion status
-- Responsive design with Tailwind CSS
+- 📝 Create, read, update, and delete tasks
+- ✅ Mark tasks as complete/incomplete
+- 🤖 AI-powered task summarization using Gemini
+- 📨 Slack integration for task summaries
+- 🔐 Secure user authentication
+- 📱 Responsive design with Tailwind CSS
+- 🌙 Dark mode support
+- 🗄️ PostgreSQL database with Prisma ORM
 
-## Tech Stack
-- **Frontend:** React, React Router, Tailwind CSS
-- **Backend:** Node.js, Express
-- **Database:** postgressSQL (or MySQL if preferred) , Prisma as ORM
-- **Authentication:** JWT (JSON Web Tokens)
+## 🏗️ Project Structure
 
-## Project Setup
+```
+task-management-webapp/
+├── task-manager-frontend/    # React + Vite frontend
+└── task-management-app/      # Node.js + Express backend
+```
+
+## 🚀 Quick Start
 
 ### Prerequisites
-- Node.js (v14 or higher)
-- postgressSQL (or MySQL)
-- A code editor (e.g., Visual Studio Code)
 
-### Frontend Setup
-1. Navigate to the frontend directory:
+- Node.js (v18 or higher)
+- npm (v9 or higher)
+- PostgreSQL database
+- Gemini API key
+- Slack workspace with webhook URL
+
+### Backend Setup
+
+1. Navigate to the backend directory:
    ```bash
-   cd task-manager-frontend
+   cd task-management-app
    ```
-2. Install dependencies
+
+2. Install dependencies:
    ```bash
-   npm i
+   npm install
    ```
-3. create .env file and set your db url:
-   ```arduino
-      VITE_API_URL=http://localhost:5000
+
+3. Set up environment variables:
+   ```bash
+   cp .env.sample .env
    ```
-4. Start the application
+   Update the `.env` file with your configuration.
+
+4. Set up the database:
+   ```bash
+   npx prisma generate
+   npx prisma db push
+   ```
+
+5. Start the backend server:
    ```bash
    npm run dev
    ```
 
-### Backend Setup
-1. Navigate to the backend directory:
+### Frontend Setup
+
+1. Navigate to the frontend directory:
    ```bash
-      cd backend
+   cd task-manager-frontend
    ```
+
 2. Install dependencies:
    ```bash
-      npm install
+   npm install
    ```
-3. Create a .env file in the backend directory and set your environment variables:
-   ```makefile
-   DATABASE_URL="postgresql://*******:*********@ep-snowy-mouse-a54blf5l-pooler.us-east-2.aws.neon.tech/tasks?sslmode=require"
-   JWT_SECRET="jwtsecret"
-   PORT=5000
-   ```
-4. Start the backend server:
+
+3. Set up environment variables:
    ```bash
-   npm start
+   cp .env.sample .env
+   ```
+   Update the `.env` file with your configuration.
+
+4. Start the frontend development server:
+   ```bash
+   npm run dev
    ```
 
-## API Endpoints
+## 🔧 Environment Variables
 
+### Backend (.env)
+```env
+# Server Configuration
+PORT=3000
+NODE_ENV=development
 
-### Authentication Endpoints
+# Database
+DATABASE_URL="postgresql://user:password@localhost:5432/taskdb"
 
-#### User Login
-- **Method:** `POST`
-- **Endpoint:** `/auth/login`
-- **Request Body:**
-    ```json
-    {
-        "email": "user@example.com",
-        "password": "your_password"
-    }
-    ```
-- **Response:**
-    - **200 OK**
-        ```json
-        {
-            "token": "your_jwt_token",
-            "message": "Login successful."
-        }
-        ```
-    - **401 Unauthorized**
-        ```json
-        {
-            "message": "Invalid email or password."
-        }
-        ```
+# Authentication
+JWT_SECRET=your_jwt_secret_here
+JWT_EXPIRES_IN=24h
 
-#### User Signup
-- **Method:** `POST`
-- **Endpoint:** `/auth/signup`
-- **Request Body:**
-    ```json
-    {
-        "name": "John Doe",
-        "email": "user@example.com",
-        "password": "your_password"
-    }
-    ```
-- **Response:**
-    - **201 Created**
-        ```json
-        {
-            "message": "User registered successfully."
-        }
-        ```
-    - **400 Bad Request**
-        ```json
-        {
-            "message": "Email already exists."
-        }
-        ```
+# Gemini AI
+GEMINI_API_KEY=your_gemini_api_key
 
-### Task Endpoints
+# Slack Integration
+SLACK_WEBHOOK_URL=your_slack_webhook_url_here
+```
 
-#### Fetch All Tasks
-- **Method:** `GET`
-- **Endpoint:** `/tasks`
-- **Headers:**
-    - `Authorization: Bearer your_jwt_token`
-- **Response:**
-    - **200 OK**
-        ```json
-        [
-            {
-                "id": "task_id",
-                "title": "Task Title",
-                "description": "Task description",
-                "completed": false
-            },
-            ...
-        ]
-        ```
+### Frontend (.env)
+```env
+VITE_API_URL=http://localhost:3000
+VITE_GEMINI_API_KEY=your_gemini_api_key
+VITE_SLACK_WEBHOOK_URL=your_slack_webhook_url
+```
 
-#### Fetch Task by ID
-- **Method:** `GET`
-- **Endpoint:** `/tasks/:id`
-- **Headers:**
-    - `Authorization: Bearer your_jwt_token`
-- **Response:**
-    - **200 OK**
-        ```json
-        {
-            "id": "task_id",
-            "title": "Task Title",
-            "description": "Task description",
-            "completed": false
-        }
-        ```
-    - **404 Not Found**
-        ```json
-        {
-            "message": "Task not found."
-        }
-        ```
+## 📚 Documentation
 
-#### Create a New Task
-- **Method:** `POST`
-- **Endpoint:** `/tasks`
-- **Headers:**
-    - `Authorization: Bearer your_jwt_token`
-- **Request Body:**
-    ```json
-    {
-        "title": "New Task",
-        "description": "Description of the new task."
-    }
-    ```
-- **Response:**
-    - **201 Created**
-        ```json
-        {
-            "id": "new_task_id",
-            "title": "New Task",
-            "description": "Description of the new task.",
-            "completed": false
-        }
-        ```
+- [Backend Documentation](./task-management-app/README.md)
+- [Frontend Documentation](./task-manager-frontend/README.md)
 
-#### Update a Task
-- **Method:** `PUT`
-- **Endpoint:** `/tasks/:id`
-- **Headers:**
-    - `Authorization: Bearer your_jwt_token`
-- **Request Body:**
-    ```json
-    {
-        "title": "Updated Task Title",
-        "description": "Updated description",
-        "completed": true
-    }
-    ```
-- **Response:**
-    - **200 OK**
-        ```json
-        {
-            "id": "task_id",
-            "title": "Updated Task Title",
-            "description": "Updated description",
-            "completed": true
-        }
-        ```
-    - **404 Not Found**
-        ```json
-        {
-            "message": "Task not found."
-        }
-        ```
+## 🔐 Demo Credentials
 
-#### Delete a Task
-- **Method:** `DELETE`
-- **Endpoint:** `/tasks/:id`
-- **Headers:**
-    - `Authorization: Bearer your_jwt_token`
-- **Response:**
-    - **204 No Content**
-    - **404 Not Found**
-        ```json
-        {
-            "message": "Task not found."
-        }
-        ```
+For testing purposes, you can use these demo credentials:
+- Email: your@email.com
+- Password: your@email.com
 
-### Notes
-- Ensure to include the JWT token in the `Authorization` header for all requests to task-related endpoints.
-- Adjust the base URL according to your deployment settings.
+## 🛠️ Tech Stack
 
-For more details on using these endpoints, refer to the [Postman documentation](https://documenter.getpostman.com/view/31841361/2sAXxWZpLV).
+### Frontend
+- React
+- TypeScript
+- Vite
+- Tailwind CSS
+- React Router
+- Axios
 
+### Backend
+- Node.js
+- Express
+- Prisma
+- PostgreSQL
+- JWT Authentication
+- Gemini AI API
+- Slack Webhooks
 
-## API Documentation
-   You can view the API documentation using Postman at the following link: https://documenter.getpostman.com/view/31841361/2sAXxWZpLV
+## 🚀 Deployment
 
-### Using Postman
-   - Import the Postman collection from the link provided to test the various API endpoints.
-   - Set the environment variable for the base URL to match your local setup.
-   - Use the collection to test the various API endpoints.
+### Backend Deployment
+1. Set up a PostgreSQL database
+2. Configure environment variables
+3. Deploy to your preferred hosting service (e.g., Vercel, Heroku)
+
+### Frontend Deployment
+1. Build the application:
+   ```bash
+   npm run build
+   ```
+2. Deploy the `dist` directory to your preferred hosting service
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## 📝 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 👥 Authors
+
+- Your Name - Initial work
+
+## 🙏 Acknowledgments
+
+- Gemini AI for task summarization
+- Slack for webhook integration
+- The open-source community for amazing tools and libraries
