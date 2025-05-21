@@ -1,7 +1,9 @@
 import axios from 'axios';
 
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+
 const apiClient = axios.create({
-  baseURL: import.meta.env.VITE_API_URL,
+  baseURL: API_BASE_URL ,
   headers: {
     'Content-Type': 'application/json',
   },
@@ -84,5 +86,26 @@ export const updateTask = async (id: string, { title, description, completed }: 
   } catch (error: any) {
     console.error('Failed to update task:', error.response?.data || error.message);
     throw new Error('Failed to update task. Please try again.');
+  }
+};
+
+export const sendSummaryToSlack = async () => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/api/summarize`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${localStorage.getItem('token')}`
+      }
+    });
+    
+    if (!response.ok) {
+      throw new Error('Failed to send summary to Slack');
+    }
+    
+    return await response.json();
+  } catch (error) {
+    console.error('Error sending summary to Slack:', error);
+    throw error;
   }
 };
