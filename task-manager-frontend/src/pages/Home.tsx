@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { deleteTask, fetchTasks, sendSummaryToSlack } from '../services/taskApi';
+import { fetchTasks, sendSummaryToSlack } from '../services/taskApi';
 import Header from '../components/Header';
 import TaskDisplay from '../components/TasksDisplay';
 
@@ -35,23 +35,13 @@ const Home: React.FC = () => {
   const handleSendSummary = async () => {
     try {
       setSummaryLoading(true);
-      const result = await sendSummaryToSlack();
+      await sendSummaryToSlack();
       alert('Summary sent to Slack successfully!');
     } catch (error) {
       console.error('Error sending summary:', error);
       alert('Failed to send summary to Slack. Please try again.');
     } finally {
       setSummaryLoading(false);
-    }
-  };
-
-  // Delete task handler
-  const handleDelete = async (id: string) => {
-    try {
-      await deleteTask(id);
-      setTasks((prevTasks) => prevTasks.filter((task) => task.id !== id));
-    } catch (error) {
-      console.error('Error deleting task:', error);
     }
   };
 
@@ -83,8 +73,7 @@ const Home: React.FC = () => {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {tasks.map((task) => (
-            <TaskDisplay id={task.id}></TaskDisplay>
-            // <TaskCard id={task.id} title={task.title} description={task.description} handleDelete={handleDelete} navigate={navigate} ></TaskCard>
+            <TaskDisplay key={task.id} id={task.id}></TaskDisplay>
           ))}
         </div>
       )}
