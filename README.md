@@ -13,15 +13,54 @@ A full-stack task management application with AI-powered task summarization and 
 - 🌙 Dark mode support
 - 🗄️ PostgreSQL database with Prisma ORM
 
-## 🏗️ Project Structure
+## 🏗️ Architecture Overview
 
+### System Design
 ```
-task-management-webapp/
-├── task-manager-frontend/    # React + Vite frontend
-└── task-management-app/      # Node.js + Express backend
+┌─────────────────┐     ┌─────────────────┐     ┌─────────────────┐
+│   Frontend      │     │    Backend      │     │   External      │
+│   (React)       │◄────┤    (Express)    │◄────┤   Services      │
+└─────────────────┘     └─────────────────┘     └─────────────────┘
+        │                       │                       │
+        │                       │                       │
+        ▼                       ▼                       ▼
+┌─────────────────┐     ┌─────────────────┐     ┌─────────────────┐
+│   State         │     │   Database      │     │   Gemini AI     │
+│   Management    │     │   (PostgreSQL)  │     │   Slack         │
+└─────────────────┘     └─────────────────┘     └─────────────────┘
 ```
 
-## 🚀 Quick Start
+### Key Design Decisions
+
+1. **Frontend Architecture**
+   - React with TypeScript for type safety and better developer experience
+   - Vite for faster development and optimized builds
+   - Tailwind CSS for utility-first styling and responsive design
+   - Context API for global state management
+   - Custom hooks for reusable logic
+
+2. **Backend Architecture**
+   - Express.js for RESTful API endpoints
+   - Prisma as ORM for type-safe database operations
+   - JWT for stateless authentication
+   - Middleware-based request processing
+   - Service layer pattern for business logic
+
+3. **Database Design**
+   - PostgreSQL for robust relational data storage
+   - Prisma schema for type-safe database operations
+   - Optimized indexes for better query performance
+   - Soft delete for data recovery
+
+4. **Security Measures**
+   - JWT-based authentication
+   - Password hashing with bcrypt
+   - CORS protection
+   - Rate limiting
+   - Input validation
+   - Environment variable management
+
+## 🚀 Setup Guide
 
 ### Prerequisites
 
@@ -83,6 +122,50 @@ task-management-webapp/
    npm run dev
    ```
 
+## 🔧 Integration Setup
+
+### Gemini AI Integration
+
+1. **Get API Key**
+   - Visit [Google AI Studio](https://makersuite.google.com/app/apikey)
+   - Create a new API key
+   - Copy the key to your environment variables
+
+2. **Configure Backend**
+   ```env
+   GEMINI_API_KEY=your_gemini_api_key
+   ```
+
+3. **Configure Frontend**
+   ```env
+   VITE_GEMINI_API_KEY=your_gemini_api_key
+   ```
+
+### Slack Integration
+
+1. **Create Slack App**
+   - Go to [Slack API](https://api.slack.com/apps)
+   - Click "Create New App"
+   - Choose "From scratch"
+   - Name your app and select workspace
+
+2. **Set Up Incoming Webhooks**
+   - Go to "Incoming Webhooks"
+   - Activate incoming webhooks
+   - Click "Add New Webhook to Workspace"
+   - Choose the channel for task summaries
+   - Copy the Webhook URL
+
+3. **Configure Backend**
+   ```env
+   SLACK_WEBHOOK_URL=your_slack_webhook_url
+   ```
+
+4. **Configure Frontend**
+   ```env
+   VITE_SLACK_WEBHOOK_URL=your_slack_webhook_url
+   ```
+
 ## 🔧 Environment Variables
 
 ### Backend (.env)
@@ -102,7 +185,7 @@ JWT_EXPIRES_IN=24h
 GEMINI_API_KEY=your_gemini_api_key
 
 # Slack Integration
-SLACK_WEBHOOK_URL=your_slack_webhook_url_here
+SLACK_WEBHOOK_URL=your_slack_webhook_url
 ```
 
 ### Frontend (.env)
