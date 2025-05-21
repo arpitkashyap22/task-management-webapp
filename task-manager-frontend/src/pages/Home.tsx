@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { deleteTask, fetchTasks } from '../services/taskApi';
 import Header from '../components/Header';
 import TaskDisplay from '../components/TasksDisplay';
@@ -14,7 +13,6 @@ interface Task {
 const Home: React.FC = () => {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [loading, setLoading] = useState(true);
-  const navigate = useNavigate();
 
 
   // Fetch tasks on component mount
